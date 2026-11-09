@@ -1,0 +1,28 @@
+services:
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: ${QLST_DB_PASSWORD:?Set QLST_DB_PASSWORD before starting}
+      MYSQL_DATABASE: quanlysieuthi
+    command: ["--bind-address=127.0.0.1"]
+    ports:
+      - "127.0.0.1:8000:8000"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "MYSQL_PWD=\"$${MYSQL_ROOT_PASSWORD}\" mysql -uroot -e 'SELECT 1' >/dev/null 2>&1"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+
+  app:
+    build: .
+    network_mode: service:db
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./:/app:ro
+
+volumes:
+  mysql_data:

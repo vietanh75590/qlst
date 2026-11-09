@@ -8,7 +8,7 @@
 if (!class_exists('Database')) {
     class Database {
         // Thông tin kết nối
-        private $host = 'localhost';
+        private $host = '127.0.0.1';
         private $db_name = 'quanlysieuthi';
         private $username = 'root';
         private $password = '231006';
