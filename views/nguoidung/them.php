@@ -46,14 +46,14 @@ require_once 'views/layout/header.php';
                 <select name="role" required>
                     <option value="">-- Chọn vai trò --</option>
                     <option value="customer">Khách hàng (Customer)</option>
-                    <option value="staff">Nhân viên (Staff)</option>
+                    <option value="staff">Nhân viên bán hàng hoặc kho (Staff)</option>
                     <option value="admin">Quản trị viên (Admin)</option>
                 </select>
             </td>
         </tr>
         <tr>
             <td><b>Chức vụ:</b></td>
-            <td><input type="text" name="chucvu" placeholder="Thu ngân, Quản lý kho..." size="40"></td>
+            <td><input type="text" name="chucvu" list="nhom-nhan-vien" placeholder="Nhân viên bán hàng hoặc Nhân viên thủ kho" size="40"><datalist id="nhom-nhan-vien"><option value="Nhân viên bán hàng"><option value="Nhân viên thủ kho"></datalist></td>
         </tr>
         <tr>
             <td><b>Mức lương (VNĐ):</b></td>

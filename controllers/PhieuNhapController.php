@@ -19,12 +19,7 @@ class PhieuNhapController
 
     public function __construct()
     {
-        $role = strtolower($_SESSION['user_role'] ?? 'guest');
-        if ($role === 'customer' || $role === 'guest') {
-            echo '<p><font color="red"><b>[Từ chối truy cập]: Quyền Khách hàng (Customer) không có quyền truy cập trang Nhập kho!</b></font></p>';
-            echo '<p><a href="index.php?controller=sanpham&action=index">&larr; Quay lại danh mục sản phẩm</a></p>';
-            exit;
-        }
+        Access::requireRoles(['admin', 'warehouse']);
 
         $this->phieuNhapModel = new PhieuNhapModel();
         $this->sanPhamModel = new SanPhamModel();
@@ -146,6 +141,7 @@ class PhieuNhapController
      */
     public function delete($id = null)
     {
+        Access::requireRoles(['admin']);
         $id = $id ?? ($_GET['id'] ?? null);
         if (!$id) {
             header('Location: index.php?controller=phieunhap&action=index');

@@ -5,6 +5,7 @@ session_start();
 
 // Kết nối cơ sở dữ liệu
 require_once __DIR__ . '/config/Database.php';
+require_once __DIR__ . '/config/Access.php';
 
 // Lấy tên controller và action từ URL, mặc định là 'dashboard' và 'index'
 $controllerName = isset($_GET['controller']) ? $_GET['controller'] : 'dashboard';
@@ -13,15 +14,26 @@ $action = isset($_GET['action']) ? $_GET['action'] : 'index';
 // Lấy id nếu có (dùng cho edit, delete, view - hỗ trợ cả chuỗi như SP01, KH01 và số)
 $id = isset($_GET['id']) ? trim($_GET['id']) : null;
 
-// Tạo tên class controller theo quy ước: viết hoa chữ cái đầu + "Controller"
-$controllerClass = ucfirst($controllerName) . 'Controller';
+// Ánh xạ tên URL sang tên lớp có chữ hoa tương ứng trên Linux
+$controllers = [
+    'dashboard' => 'DashboardController',
+    'donhang' => 'DonHangController',
+    'phieunhap' => 'PhieuNhapController',
+    'sanpham' => 'SanPhamController',
+    'danhmuc' => 'DanhMucController',
+    'nhacungcap' => 'NhaCungCapController',
+    'nguoidung' => 'NguoiDungController',
+    'calamviec' => 'CaLamViecController',
+    'lichlamviec' => 'LichLamViecController',
+];
+$controllerClass = $controllers[strtolower($controllerName)] ?? null;
 
 // Đường dẫn tới file controller
-$controllerFile = 'controllers/' . $controllerClass . '.php';
+$controllerFile = __DIR__ . '/controllers/' . $controllerClass . '.php';
 
 try {
     // Nếu controller không tồn tại (ví dụ: video đã gỡ bỏ), tự động chuyển về trang chủ Dashboard
-    if (!file_exists($controllerFile)) {
+    if (!$controllerClass || !file_exists($controllerFile)) {
         header('Location: index.php?controller=dashboard&action=index');
         exit;
     }

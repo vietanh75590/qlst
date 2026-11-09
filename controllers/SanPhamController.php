@@ -16,19 +16,15 @@ class SanPhamController
 
     public function __construct()
     {
+        $action = $_GET['action'] ?? 'index';
+        if (in_array($action, ['create', 'store', 'edit', 'update'], true)) {
+            Access::requireRoles(['admin', 'warehouse']);
+        } elseif ($action === 'delete') {
+            Access::requireRoles(['admin']);
+        }
         $this->sanPhamModel = new SanPhamModel();
         $this->danhMucModel = new DanhMucModel();
         $this->nhaCungCapModel = new NhaCungCapModel();
-    }
-
-    private function requireStaffOrAdmin()
-    {
-        $role = strtolower($_SESSION['user_role'] ?? ($_SESSION['user']['role'] ?? 'guest'));
-        if ($role === 'customer' || $role === 'guest') {
-            echo '<p><font color="red"><b>[Từ chối truy cập]: Quyền Khách hàng (Customer) chỉ được xem danh mục sản phẩm, không có quyền thêm/sửa/xóa sản phẩm!</b></font></p>';
-            echo '<p><a href="index.php?controller=sanpham&action=index">&larr; Quay lại danh mục sản phẩm</a></p>';
-            exit;
-        }
     }
 
     public function index()
@@ -50,7 +46,7 @@ class SanPhamController
 
     public function create()
     {
-        $this->requireStaffOrAdmin();
+        Access::requireRoles(['admin', 'warehouse']);
         $danhmucs = $this->danhMucModel->getAll();
         $nhacungcaps = $this->nhaCungCapModel->getAll();
 
@@ -96,7 +92,7 @@ class SanPhamController
 
     public function edit($id = null)
     {
-        $this->requireStaffOrAdmin();
+        Access::requireRoles(['admin', 'warehouse']);
         $id = $id ?? ($_GET['id'] ?? null);
         if (!$id) {
             header('Location: index.php?controller=sanpham&action=index');
@@ -153,7 +149,7 @@ class SanPhamController
 
     public function delete($id = null)
     {
-        $this->requireStaffOrAdmin();
+        Access::requireRoles(['admin']);
         $id = $id ?? ($_GET['id'] ?? null);
         if (!$id) {
             header('Location: index.php?controller=sanpham&action=index');

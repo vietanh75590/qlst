@@ -33,7 +33,7 @@ class NhaCungCapController
     public function index()
     {
         $role = strtolower($_SESSION['user_role'] ?? 'guest');
-        if ($role === 'customer') {
+        if (!in_array($role, ['admin', 'warehouse'], true)) {
             echo '<p><font color="red"><b>[Từ chối truy cập]: Quyền Khách hàng (Customer) không có quyền truy cập trang Nhà cung cấp!</b></font></p>';
             echo '<p><a href="index.php?controller=sanpham&action=index">&larr; Quay lại danh mục sản phẩm</a></p>';
             exit;

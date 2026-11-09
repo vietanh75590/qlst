@@ -1,7 +1,7 @@
 <?php
 require_once 'views/layout/header.php';
 $userRole = strtolower($_SESSION['user_role'] ?? 'guest');
-$isAdminOrStaff = in_array($userRole, ['admin', 'staff']);
+$canSell = in_array($userRole, ['admin', 'sales'], true);
 ?>
 
 <h2><?= ($userRole === 'customer') ? 'LỊCH SỬ ĐƠN HÀNG CỦA BẠN' : 'QUẢN LÝ BÁN HÀNG & ĐƠN HÀNG' ?></h2>
@@ -12,7 +12,7 @@ $isAdminOrStaff = in_array($userRole, ['admin', 'staff']);
             <?= ($userRole === 'customer') ? 'Danh sách các đơn hàng bạn đã mua tại siêu thị:' : 'Danh sách các giao dịch bán hàng tại siêu thị:' ?>
         </td>
         <td align="right">
-            <?php if ($isAdminOrStaff): ?>
+            <?php if ($canSell): ?>
                 <a href="index.php?controller=donhang&action=create"><b>+ LẬP ĐƠN BÁN HÀNG MỚI</b></a>
             <?php elseif ($userRole === 'customer'): ?>
                 <a href="index.php?controller=donhang&action=create"><b>+ ĐẶT MUA HÀNG MỚI</b></a>
@@ -46,7 +46,7 @@ $isAdminOrStaff = in_array($userRole, ['admin', 'staff']);
                 <td><?= date('d/m/Y H:i', strtotime($dh['created_at'])) ?></td>
                 <td>
                     <a href="index.php?controller=donhang&action=view&id=<?= $dh['id'] ?>">[Xem chi tiết / In]</a>
-                    <?php if ($isAdminOrStaff): ?>
+                    <?php if ($userRole === 'admin'): ?>
                         | <a href="index.php?controller=donhang&action=delete&id=<?= $dh['id'] ?>">[Xóa]</a>
                     <?php endif; ?>
                 </td>

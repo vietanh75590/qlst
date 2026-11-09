@@ -19,6 +19,7 @@ class DonHangController
 
     public function __construct()
     {
+        Access::requireRoles(['admin', 'sales', 'customer']);
         $this->donHangModel = new DonHangModel();
         $this->sanPhamModel = new SanPhamModel();
         $this->nguoiDungModel = new NguoiDungModel();
@@ -174,11 +175,7 @@ class DonHangController
     public function delete($id = null)
     {
         $userRole = strtolower($_SESSION['user_role'] ?? 'guest');
-        if ($userRole === 'customer') {
-            echo '<p><font color="red"><b>[Từ chối truy cập]: Khách hàng không có quyền xóa đơn hàng!</b></font></p>';
-            echo '<p><a href="index.php?controller=donhang&action=index">&larr; Quay lại lịch sử đơn hàng</a></p>';
-            exit;
-        }
+        Access::requireRoles(['admin']);
 
         $id = $id ?? ($_GET['id'] ?? null);
         if (!$id) {

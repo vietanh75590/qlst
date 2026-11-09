@@ -1,7 +1,7 @@
 <?php
 require_once 'views/layout/header.php';
 $userRole = strtolower($_SESSION['user_role'] ?? 'guest');
-$isAdminOrStaff = in_array($userRole, ['admin', 'staff']);
+$canEditProducts = in_array($userRole, ['admin', 'warehouse'], true);
 $isCustomer = ($userRole === 'customer');
 ?>
 
@@ -22,7 +22,7 @@ $isCustomer = ($userRole === 'customer');
             </form>
         </td>
         <td align="right">
-            <?php if ($isAdminOrStaff): ?>
+            <?php if ($canEditProducts): ?>
                 <a href="index.php?controller=sanpham&action=create"><b>+ Thêm sản phẩm mới</b></a>
             <?php elseif ($isCustomer): ?>
                 <a href="index.php?controller=donhang&action=create"><b>+ ĐẶT MUA HÀNG TRỰC TUYẾN</b></a>
@@ -63,9 +63,11 @@ $isCustomer = ($userRole === 'customer');
                 </td>
                 <td><?= htmlspecialchars($sp['hsd'] ?? 'N/A') ?></td>
                 <td>
-                    <?php if ($isAdminOrStaff): ?>
+                    <?php if ($canEditProducts): ?>
                         <a href="index.php?controller=sanpham&action=edit&id=<?= $sp['id'] ?>">Sửa</a> |
-                        <a href="index.php?controller=sanpham&action=delete&id=<?= $sp['id'] ?>">Xóa</a>
+                        <?php if ($userRole === 'admin'): ?>
+                            <a href="index.php?controller=sanpham&action=delete&id=<?= $sp['id'] ?>">Xóa</a>
+                        <?php endif; ?>
                     <?php elseif ($isCustomer): ?>
                         <a href="index.php?controller=donhang&action=create&id_sp=<?= $sp['id'] ?>"><b>[+ Đặt mua]</b></a>
                     <?php else: ?>

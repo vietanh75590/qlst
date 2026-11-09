@@ -9,7 +9,9 @@ require_once 'views/layout/header.php';
     <tr>
         <td><h2>QUẢN LÝ LỊCH PHÂN CA & CHẤM CÔNG</h2></td>
         <td align="right">
-            <a href="index.php?controller=lichlamviec&action=create"><b>+ PHÂN CA LÀM VIỆC</b></a>
+            <?php if (Access::role() === 'admin'): ?>
+                <a href="index.php?controller=lichlamviec&action=create"><b>+ PHÂN CA LÀM VIỆC</b></a>
+            <?php endif; ?>
         </td>
     </tr>
 </table>
@@ -45,8 +47,10 @@ require_once 'views/layout/header.php';
                 <td align="center"><?= date('d/m/Y', strtotime($llv['ngaylam'])) ?></td>
                 <td><?= htmlspecialchars($llv['ghichu'] ?? 'Không có') ?></td>
                 <td align="center">
-                    <a href="index.php?controller=lichlamviec&action=edit&id=<?= $llv['id'] ?>">[Sửa]</a> |
-                    <a href="index.php?controller=lichlamviec&action=delete&id=<?= $llv['id'] ?>">[Xóa]</a>
+                    <?php if (Access::role() === 'admin'): ?>
+                        <a href="index.php?controller=lichlamviec&action=edit&id=<?= $llv['id'] ?>">[Sửa]</a> |
+                        <a href="index.php?controller=lichlamviec&action=delete&id=<?= $llv['id'] ?>">[Xóa]</a>
+                    <?php endif; ?>
                 </td>
             </tr>
         <?php endforeach; ?>

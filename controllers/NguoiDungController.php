@@ -80,13 +80,21 @@ class NguoiDungController
                 $_SESSION['user_id']      = $user['id'];
                 $_SESSION['user_name']    = $user['hoten'];
                 $_SESSION['user_email']   = $user['email'];
-                $_SESSION['user_role']    = $user['role'];
+                $_SESSION['user_role']    = Access::resolveRole($user);
                 $_SESSION['id_khachhang'] = $user['id_khachhang'] ?? null;
                 $_SESSION['id_nhanvien']  = $user['id_nhanvien'] ?? null;
 
                 // Chuyển hướng theo vai trò
-                if ($user['role'] === 'admin' || $user['role'] === 'staff') {
+                if ($_SESSION['user_role'] === 'admin') {
                     header('Location: index.php?controller=dashboard&action=index');
+                } elseif ($_SESSION['user_role'] === 'sales') {
+                    header('Location: index.php?controller=donhang&action=index');
+                } elseif ($_SESSION['user_role'] === 'warehouse') {
+                    header('Location: index.php?controller=phieunhap&action=index');
+                } elseif ($_SESSION['user_role'] === 'staff') {
+                    session_unset();
+                    $_SESSION['error'] = 'Chức vụ nhân viên chưa được phân loại thành bán hàng hoặc kho.';
+                    header('Location: index.php?controller=nguoidung&action=login');
                 } else {
                     header('Location: index.php?controller=sanpham&action=index');
                 }
@@ -150,6 +158,9 @@ class NguoiDungController
                     'luong'        => $_POST['luong'] ?? 0,
                 ];
 
+                if ($data['role'] === 'staff' && Access::resolveRole($data) === 'staff') {
+                    throw new InvalidArgumentException('Hãy chọn chức vụ bán hàng hoặc kho.');
+                }
                 $this->nguoiDungModel->create($data);
                 $_SESSION['message'] = 'Đã thêm người dùng mới thành công!';
                 header('Location: index.php?controller=nguoidung&action=index&msg=created');
@@ -202,6 +213,11 @@ class NguoiDungController
                 $data['matkhau'] = password_hash($_POST['matkhau'], PASSWORD_DEFAULT);
             }
 
+            if ($data['role'] === 'staff' && Access::resolveRole($data) === 'staff') {
+                $_SESSION['error'] = 'Hãy chọn chức vụ bán hàng hoặc kho.';
+                header('Location: index.php?controller=nguoidung&action=edit&id=' . urlencode($id));
+                exit;
+            }
             $this->nguoiDungModel->update($id, $data);
 
             header('Location: index.php?controller=nguoidung&action=index&msg=updated');

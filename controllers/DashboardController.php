@@ -18,6 +18,7 @@ class DashboardController
 
     public function __construct()
     {
+        Access::requireRoles(['admin']);
         $this->sanPhamModel = new SanPhamModel();
         $this->donHangModel = new DonHangModel();
         $this->nguoiDungModel = new NguoiDungModel();
@@ -26,21 +27,6 @@ class DashboardController
 
     public function index()
     {
-        $userRole = strtolower($_SESSION['user_role'] ?? '');
-        if ($userRole === 'customer') {
-            // Quyền customer không được xem Dashboard quản trị
-            echo '<p><font color="red"><b>[Từ chối truy cập]: Quyền Khách hàng (Customer) không có quyền truy cập Bảng điều khiển quản trị!</b></font></p>';
-            echo '<p><a href="index.php?controller=sanpham&action=index">&larr; Đi đến Danh mục sản phẩm</a> | <a href="index.php?controller=donhang&action=index">Lịch sử đơn hàng</a></p>';
-            exit;
-        }
-
-        // Tự động gán session admin mặc định nếu chưa đăng nhập (tiện lợi cho học tập và chấm bài)
-        if (!isset($_SESSION['user_id'])) {
-            $_SESSION['user_id']   = 'AD01';
-            $_SESSION['user_name'] = 'Nguyễn Quản Trị';
-            $_SESSION['user_role'] = 'admin';
-        }
-
         // Thu thập thống kê
         $totalProducts = $this->sanPhamModel->count();
         $totalOrders   = $this->donHangModel->count();

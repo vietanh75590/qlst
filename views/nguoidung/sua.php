@@ -48,14 +48,14 @@ require_once 'views/layout/header.php';
             <td>
                 <select name="role">
                     <option value="customer" <?= $nguoidung['role'] === 'customer' ? 'selected' : '' ?>>Khách hàng (Customer)</option>
-                    <option value="staff" <?= $nguoidung['role'] === 'staff' ? 'selected' : '' ?>>Nhân viên (Staff)</option>
+                    <option value="staff" <?= $nguoidung['role'] === 'staff' ? 'selected' : '' ?>>Nhân viên bán hàng hoặc kho (Staff)</option>
                     <option value="admin" <?= $nguoidung['role'] === 'admin' ? 'selected' : '' ?>>Quản trị viên (Admin)</option>
                 </select>
             </td>
         </tr>
         <tr>
             <td><b>Chức vụ:</b></td>
-            <td><input type="text" name="chucvu" value="<?= htmlspecialchars($nguoidung['chucvu'] ?? '') ?>" size="40"></td>
+            <td><input type="text" name="chucvu" value="<?= htmlspecialchars($nguoidung['chucvu'] ?? '') ?>" list="nhom-nhan-vien" size="40"><datalist id="nhom-nhan-vien"><option value="Nhân viên bán hàng"><option value="Nhân viên thủ kho"></datalist></td>
         </tr>
         <tr>
             <td><b>Mức lương (VNĐ):</b></td>

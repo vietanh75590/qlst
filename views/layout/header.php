@@ -21,18 +21,21 @@ $userRole = strtolower($_SESSION['user_role'] ?? ($_SESSION['user']['role'] ?? '
                     <a href="index.php?controller=danhmuc&action=index">Danh mục</a> |
                     <a href="index.php?controller=donhang&action=create">Đặt mua hàng</a> |
                     <a href="index.php?controller=donhang&action=index">Lịch sử đơn hàng</a>
-                <?php elseif (in_array($userRole, ['admin', 'staff'])): ?>
-                    <!-- Quản trị viên (ADMIN) & Nhân viên (STAFF) -->
-                    <a href="index.php?controller=dashboard&action=index">Trang chủ</a> |
+                <?php elseif (in_array($userRole, ['admin', 'sales', 'warehouse'], true)): ?>
                     <a href="index.php?controller=sanpham&action=index">Sản phẩm</a> |
                     <a href="index.php?controller=danhmuc&action=index">Danh mục</a> |
-                    <a href="index.php?controller=nhacungcap&action=index">Nhà cung cấp</a> |
-                    <a href="index.php?controller=donhang&action=index">Bán hàng (Đơn hàng)</a> |
-                    <a href="index.php?controller=phieunhap&action=index">Nhập kho</a> |
-                    <?php if ($userRole === 'admin'): ?>
-                        <a href="index.php?controller=nguoidung&action=index">Nhân sự</a> |
+                    <?php if (in_array($userRole, ['admin', 'sales'], true)): ?>
+                        <a href="index.php?controller=donhang&action=index">Bán hàng</a> |
                     <?php endif; ?>
-                    <a href="index.php?controller=calamviec&action=index">Ca làm việc</a> |
+                    <?php if (in_array($userRole, ['admin', 'warehouse'], true)): ?>
+                        <a href="index.php?controller=nhacungcap&action=index">Nhà cung cấp</a> |
+                        <a href="index.php?controller=phieunhap&action=index">Nhập kho</a> |
+                    <?php endif; ?>
+                    <?php if ($userRole === 'admin'): ?>
+                        <a href="index.php?controller=dashboard&action=index">Trang chủ</a> |
+                        <a href="index.php?controller=nguoidung&action=index">Nhân sự</a> |
+                        <a href="index.php?controller=calamviec&action=index">Ca làm việc</a> |
+                    <?php endif; ?>
                     <a href="index.php?controller=lichlamviec&action=index">Lịch làm việc</a>
                 <?php else: ?>
                     <!-- Chưa đăng nhập -->

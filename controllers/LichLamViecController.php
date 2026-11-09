@@ -19,12 +19,7 @@ class LichLamViecController
 
     public function __construct()
     {
-        $role = strtolower($_SESSION['user_role'] ?? 'guest');
-        if ($role === 'customer' || $role === 'guest') {
-            echo '<p><font color="red"><b>[Từ chối truy cập]: Quyền Khách hàng (Customer) không có quyền truy cập trang Lịch làm việc!</b></font></p>';
-            echo '<p><a href="index.php?controller=sanpham&action=index">&larr; Quay lại danh mục sản phẩm</a></p>';
-            exit;
-        }
+        Access::requireRoles(['admin', 'sales', 'warehouse']);
 
         $this->lichLamViecModel = new LichLamViecModel();
         $this->nguoiDungModel = new NguoiDungModel();
@@ -37,6 +32,10 @@ class LichLamViecController
     public function index()
     {
         $lichlamviecs = $this->lichLamViecModel->getAll();
+        if (Access::role() !== 'admin') {
+            $employeeId = $_SESSION['id_nhanvien'] ?? null;
+            $lichlamviecs = array_values(array_filter($lichlamviecs, static fn($item) => $employeeId && ($item['id_nhanvien'] ?? null) === $employeeId));
+        }
         $title = 'Lịch làm việc';
         require_once 'views/lichlamviec/index.php';
     }
@@ -48,6 +47,7 @@ class LichLamViecController
      */
     public function create()
     {
+        Access::requireRoles(['admin']);
         // Lấy danh sách nhân viên (role = staff hoặc admin) và ca làm việc
         $nhanviens = $this->nguoiDungModel->getStaff();
         $calamviecs = $this->caLamViecModel->getAll();
@@ -82,6 +82,7 @@ class LichLamViecController
      */
     public function edit($id = null)
     {
+        Access::requireRoles(['admin']);
         $id = $id ?? ($_GET['id'] ?? null);
         if (!$id) {
             header('Location: index.php?controller=lichlamviec&action=index');
@@ -127,6 +128,7 @@ class LichLamViecController
      */
     public function delete($id = null)
     {
+        Access::requireRoles(['admin']);
         $id = $id ?? ($_GET['id'] ?? null);
         if (!$id) {
             header('Location: index.php?controller=lichlamviec&action=index');

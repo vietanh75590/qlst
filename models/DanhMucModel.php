@@ -4,7 +4,7 @@
  * Quản lý các thao tác CRUD với bảng danhmucsanpham
  */
 
-require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../config/Database.php';
 
 class DanhMucModel {
     private $conn;
